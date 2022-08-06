@@ -1,20 +1,20 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, Integer, String, ForeignKey
+from models.city import City
+from sqlalchemy.orm import relationship
 import os
 import models
-from models.base_model import BaseModel, Base
-from models.city import City
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
 
 
 class State(BaseModel, Base):
     """ State class """
-
     __tablename__ = 'states'
     name = Column(String(128), nullable=False)
 
     # creating relationship with cities
+
     storage_type = os.getenv("HBNB_TYPE_STORAGE")
     if storage_type == "db":
         cities = relationship("City",
@@ -23,8 +23,9 @@ class State(BaseModel, Base):
     else:
         @property
         def cities(self):
-            city_list = []
-            for city in list(models.storage.all(City).values()):
-                if city.state_id == self.id:
-                    city_list.append(city)
-            return city_list
+            _cities_list = []
+            cities_dict = models.storage.all(City)
+            for city_id, obj in cities_dict.items():
+                if self.id == obj.state_id:
+                    _cities_list.append(obj)
+            return _cities_list

@@ -8,27 +8,18 @@ class FileStorage:
     __file_path = 'file.json'
     __objects = {}
 
-    """
-    def all(self):
-        #Returns a dictionary of models currently in storage
-        return FileStorage.__objects
-    """
-
     def all(self, cls=None):
-        """Return a dictionary of instantiated objects in __objects.
-        If a cls is specified, returns a dictionary of objects of that type.
-        Otherwise, returns the __objects dictionary.
-        """
-        if cls is not None:
-            if type(cls) == str:
-                cls = eval(cls)
-            cls_dict = {}
-            for k, v in self.__objects.items():
-                if type(v) == cls:
-                    cls_dict[k] = v
-            return cls_dict
-        return self.__objects
-    
+        """ Returns the list of objects of one type of class"""
+        if cls:
+            object_cls = {}
+            for key in self.__objects:
+                class_name = key.split(".")
+                if class_name[0] == cls.__name__:
+                    object_cls.update({key: self.__objects[key]})
+            return object_cls
+        else:
+            return self.__objects
+
     def new(self, obj):
         """Adds new object to storage dictionary"""
         self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
@@ -62,12 +53,18 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
-        """Delete a given object from __objects, if it exists."""
+        """ delete obj from __objects if its inside
+        - if obj is equal to None, the method should
+        not do anything """
         if obj:
-            key = f"{type(obj).__name__}.{obj.id}"
+            key = "{}.{}".format(type(obj).__name__, obj.id)
             del self.__objects[key]
+
+    def close(self):
+        """ close method call reload() """
+        self.reload()
