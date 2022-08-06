@@ -132,17 +132,17 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        args_l = args.split()
-        clss = args_l[0]
-        if clss not in HBNBCommand.classes:
+        arg_list = args.split()
+        class_name = arg_list[0]
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        new_instance = HBNBCommand.classes[clss]()
+        new_instance = HBNBCommand.classes[class_name]()
         # We receive the parameters like: <key name>=<value>
         # So we split it set up a dictionary that is going to contain
         # all valid parameters to be set up as attributes of the new object
-        for arg in args_l[1:]:
+        for arg in arg_list[1:]:
             param = arg.split('=')
             key = param[0]
             val = param[1]
