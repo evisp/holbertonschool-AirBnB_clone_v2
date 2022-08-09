@@ -55,7 +55,7 @@ class DBStorage:
                 cls = eval(cls)
             objs = self.__session.query(cls)
         for instance in objs:
-            key = {type(instance).__name__}.{instance.id}
+            key = f"{type(instance).__name__}.{instance.id}"
             all_instances[key] = instance
         return all_instances
         #return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
