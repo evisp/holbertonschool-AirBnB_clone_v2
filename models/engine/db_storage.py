@@ -44,21 +44,21 @@ class DBStorage:
         """
         all_instances = {}
         if cls is None:
-            objs = self.__session.query(State).all()
-            objs.extend(self.__session.query(City).all())
-            objs.extend(self.__session.query(User).all())
-            objs.extend(self.__session.query(Place).all())
-            objs.extend(self.__session.query(Review).all())
-            objs.extend(self.__session.query(Amenity).all())
+            instances_list = self.__session.query(State).all()
+            instances_list.extend(self.__session.query(City).all())
+            instances_list.extend(self.__session.query(User).all())
+            instances_list.extend(self.__session.query(Place).all())
+            instances_list.extend(self.__session.query(Review).all())
+            instances_list.extend(self.__session.query(Amenity).all())
         else:
             if type(cls) == str:
                 cls = eval(cls)
-            objs = self.__session.query(cls)
-        for instance in objs:
+            instances_list = self.__session.query(cls)
+        for instance in instances_list:
             key = f"{type(instance).__name__}.{instance.id}"
             all_instances[key] = instance
         return all_instances
-        #return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
+        #return {"{}.{}".format(type(o).__name__, o.id): o for o in instances_list}
 
     def new(self, obj):
         """Add obj to the current database session."""
